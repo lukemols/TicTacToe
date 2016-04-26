@@ -11,6 +11,9 @@ namespace TicTacToe
         public int WIDTH { get { return 3; } }
         public int HEIGHT { get { return 3; } }
 
+        public int CROSSSCORE { get { return CROSS * WIDTH; } }
+        public int CIRCLESCORE { get { return CIRCLE * WIDTH; } }
+
         public const int CROSS = 1;
         public const int CIRCLE = -1;
         public const int EMPTY = 0;
@@ -66,6 +69,19 @@ namespace TicTacToe
             }
         }
 
+        public bool BoardIsEmpty()
+        {
+            for (int i = 0; i < WIDTH; i++)
+                for (int j = 0; j < HEIGHT; j++)
+                {
+                    if (mboard[i, j] != EMPTY)
+                    {
+                        return false;
+                    }
+                }
+            return true;
+        }
+
         bool BoardIsFull()
         {
             for (int i = 0; i < WIDTH; i++)
@@ -89,9 +105,9 @@ namespace TicTacToe
                 {
                     sum += mboard[i, j];
                 }
-                if (sum == 3)
+                if (sum == CROSSSCORE)
                     return CROSS;
-                if (sum == -3)
+                if (sum == CIRCLESCORE)
                     return CIRCLE;
             }
 
@@ -102,9 +118,9 @@ namespace TicTacToe
                 {
                     sum += mboard[i, j];
                 }
-                if (sum == 3)
+                if (sum == CROSSSCORE)
                     return CROSS;
-                if (sum == -3)
+                if (sum == CIRCLESCORE)
                     return CIRCLE;
             }
 
@@ -115,9 +131,9 @@ namespace TicTacToe
                 sumd1 += mboard[i, i];
                 sumd2 += mboard[i, WIDTH - (i + 1)];
             }
-            if (sumd1 == 3 || sumd2 == 3)
+            if (sumd1 == CROSSSCORE || sumd2 == CROSSSCORE)
                 return CROSS;
-            if (sumd1 == -3 || sumd2 == -3)
+            if (sumd1 == CIRCLESCORE || sumd2 == CIRCLESCORE)
                 return CIRCLE;
 
             return EMPTY;

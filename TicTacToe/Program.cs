@@ -42,7 +42,7 @@ namespace TicTacToe
                 Board board = new Board();
 
                 //Crea i player
-                IPlayer p1 = new RandomPlayer();
+                IPlayer p1 = new RationalPlayer(1, Board.CIRCLE);
                 IPlayer p2 = new RandomPlayer();
 
                 //Turno del player 1
