@@ -8,8 +8,8 @@ namespace TicTacToe
 {
     class Board
     {
-        public int WIDTH { get { return 3; } }
-        public int HEIGHT { get { return 3; } }
+        public int WIDTH { get; private set; }
+        public int HEIGHT { get; private set; }
 
         public int CROSSSCORE { get { return CROSS * WIDTH; } }
         public int CIRCLESCORE { get { return CIRCLE * WIDTH; } }
@@ -26,8 +26,9 @@ namespace TicTacToe
         GameState actualState;
         public GameState ActualState { get { return actualState; } }
 
-        public Board()
+        public Board(int size = 3)
         {
+            WIDTH = HEIGHT = size;
             mboard = new int[WIDTH, HEIGHT];
             for (int i = 0; i < WIDTH; i++)
                 for (int j = 0; j < HEIGHT; j++)

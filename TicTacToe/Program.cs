@@ -8,13 +8,12 @@ namespace TicTacToe
 {
     class Program
     {
-        static int nGames = 1000000;
-        static int played = 0;
-        static int[] matches = new int[3];
+        const int RANDOMPLAYERINDEX = 1;
+        const int BORDERRATIONALPLAYERINDEX = 2;
+        const int nGames = 200000;
 
-        const int DRAWINDEX = 0;
-        const int CIRCLEINDEX = 1;
-        const int CROSSINDEX = 2;
+        static int p1id = BORDERRATIONALPLAYERINDEX;
+        static int p2id = RANDOMPLAYERINDEX;
 
         static void Main(string[] args)
         {
@@ -31,114 +30,36 @@ namespace TicTacToe
             else
                 return;
 
-            GameLoop(viewMatch);
-            ShowResults();
+
+            IPlayer p1, p2;
+            ConfigPlayers(out p1, out p2);
+            TicTacToeGame tttGame = new TicTacToeGame(p1, p2, 3, nGames, viewMatch);
+            tttGame.Play();
+            tttGame.ShowResults();
         }
 
-        static void GameLoop(bool viewMatch)
+        static void ConfigPlayers(out IPlayer p1, out IPlayer p2)
         {
-            for (int index = 0; index < nGames; index++)
+            switch(p1id)
             {
-                Board board = new Board();
-
-                //Crea i player
-                IPlayer p1 = new RationalPlayer(1, Board.CIRCLE);
-                IPlayer p2 = new RandomPlayer();
-
-                //Turno del player 1
-                bool p1turn = true;
-                int step = 1;
-
-                do
-                {
-                    int x, y, p; //x e y sono le coordinate della griglia, p è il tipo del giocatore
-
-                    if (p1turn)
-                    {
-                        p = Board.CIRCLE;
-                        p1.Update(board, out x, out y); //Fai prendere la decisione al giocatore 1
-                    }
-                    else
-                    {
-                        p = Board.CROSS;
-                        p2.Update(board, out x, out y);//Fai prendere la decisione al giocatore 2
-                    }
-                    if (board.Action(x, y, p)) //Se la mossa è valida
-                    {
-                        p1turn = !p1turn; //turno all'altro player
-                        if (viewMatch)
-                        {
-                            Console.WriteLine("Partita numero " + index + ", step " + step);
-                            DrawBoard(board); //disegna la board
-                            Console.ReadLine(); //attendi input utente
-                            step++;
-                        }
-                    }
-                }
-                while (board.ActualState == Board.GameState.INGAME);
-
-                played++;
-                ShowWinner(board, index);
-
-                if (viewMatch)
-                {
-                    Console.WriteLine("Premi E per terminare il programma o un tasto qualunque per iniziare una nuova partita");
-                    string userChoice = Console.ReadLine();
-                    if (userChoice == "E")
-                        return;
-                }
+                case BORDERRATIONALPLAYERINDEX:
+                    p1 = new BorderRationalPlayer(1, Board.CIRCLE);
+                    break;
+                case RANDOMPLAYERINDEX:
+                default:
+                    p1 = new RandomPlayer();
+                    break;
             }
-        }
-
-        static void DrawBoard(Board board)
-        {
-            int[,] gameBoard = board.mBoard;
-            Console.WriteLine("-----------");
-            for (int i = 0; i < gameBoard.GetLength(0); i++)
+            switch (p2id)
             {
-                for (int j = 0; j < gameBoard.GetLength(1); j++)
-                {
-                    string s = " ";
-                    if (gameBoard[i, j] == Board.CIRCLE)
-                        s = "O";
-                    else if (gameBoard[i, j] == Board.CROSS)
-                        s = "X";
-
-                    Console.Write("|" + s);
-                }
-
-                Console.WriteLine("|\n--------");
+                case BORDERRATIONALPLAYERINDEX:
+                    p2 = new BorderRationalPlayer(2, Board.CROSS);
+                    break;
+                case RANDOMPLAYERINDEX:
+                default:
+                    p2 = new RandomPlayer();
+                    break;
             }
-        }
-
-        static void ShowWinner(Board board, int index)
-        {
-            if (board.ActualState == Board.GameState.DRAW)
-            {
-                Console.WriteLine("La partita " + index + " è terminata in pareggio!");
-                matches[DRAWINDEX]++;
-            }
-            else if (board.ActualState == Board.GameState.CIRCLEWIN)
-            {
-                Console.WriteLine("La partita " + index + " è terminata con la vittoria dei cerchi!");
-                matches[CIRCLEINDEX]++;
-            }
-            else if (board.ActualState == Board.GameState.CROSSWIN)
-            {
-                Console.WriteLine("La partita " + index + " è terminata con la vittoria delle croci!");
-                matches[CROSSINDEX]++;
-            }
-        }
-
-        static void ShowResults()
-        {
-            string str = "Sono state effettuate " + played + " partite. Ecco i risultati:" + Environment.NewLine +
-                "Vittorie cerchi: " + matches[CIRCLEINDEX] + " (" + ((float)(matches[CIRCLEINDEX]) / played * 100) + "%)" + Environment.NewLine +
-            "Vittorie croci: " + matches[CROSSINDEX] + " (" + ((float)(matches[CROSSINDEX]) / played * 100) + "%)" + Environment.NewLine +
-            "Pareggi: " + matches[DRAWINDEX] + " (" + ((float)(matches[DRAWINDEX]) / played * 100) + "%)" + Environment.NewLine;
-            Console.WriteLine(str);
-            Console.WriteLine("Premi un tasto qualsiasi per uscire");
-            Console.ReadLine();
         }
     }
 }

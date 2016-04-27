@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace TicTacToe
 {
-    class RationalPlayer : IPlayer
+    class BorderRationalPlayer : IPlayer
     {
         Random rnd;
         int playerIndex;
         int playerSymbol;
 
-        public RationalPlayer(int index, int symbol)
+        public BorderRationalPlayer(int index, int symbol)
         {
             int seed = (int)DateTime.Now.Millisecond * GetHashCode();
             rnd = new Random(seed);
